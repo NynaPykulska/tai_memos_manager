@@ -1,0 +1,41 @@
+<div id="login-container" style="z-index: 99; background-image: url(' <%= asset_path( 'login-screen/login-background.png' ) %>' " >
+
+    <div id="login-content" class="text-center" style="padding: 40px; border: 1px solid rgba(255,255,255,0.16);">
+
+    	<img src="<%= asset_path( 'login-screen/ih-logo.png' ) %>"  class="fadeInDown animated">
+
+        <h2>Welcome to <strong>eHOTEL</strong></h2>
+        <h4>Your on-line hotel system</h4>
+
+        <div class="form-group login-additional-margins-top">
+			<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+				<div class="field">
+					<!-- <%= f.label :username %> -->
+					<%= f.text_field :username, autofocus: true, :class => "form-control", :style => "background-color: #fff !important", placeholder: "login" %>
+				</div>
+
+				<div class="field">
+					<!-- <%= f.label :password %> -->
+					<%= f.password_field :password, autocomplete: "off", :class => "form-control", placeholder: "password" %>
+				</div>
+
+				<!-- tego chyba nie obslugujemy :) 
+				<% if devise_mapping.rememberable? -%>
+					<div class="field">
+						<%= f.check_box :remember_me %>
+						<%= f.label :remember_me %>
+					</div>
+				<% end -%>
+				-->
+
+				<div class="form-group login-additional-margins-top">
+					<%= f.submit "Zaloguj", :class => "btn btn-primary g-ripple-effect", :style => "width: 100%" %>
+				</div>
+
+			<% end %>
+        </div>
+
+        <p class="login-restore-password">Forgot your password? Click <strong><a href="#">here</a></strong> to restore</p>
+    </div>
+
+</div>

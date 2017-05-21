@@ -1,0 +1,3 @@
+module MemoHelper
+	
+end
