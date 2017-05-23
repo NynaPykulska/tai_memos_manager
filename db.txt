@@ -1,0 +1,7 @@
+Host ec2-54-228-182-57.eu-west-1.compute.amazonaws.com
+Database d4mefokkve6lk0
+User zyfylzxoakbygp
+Port 5432
+Password a02d40c69893e7149f9cc838c92535bbd07bef50d22d0c3f70e029e2c88f95a9
+URI postgres://zyfylzxoakbygp:a02d40c69893e7149f9cc838c92535bbd07bef50d22d0c3f70e029e2c88f95a9@ec2-54-228-182-57.eu-west-1.compute.amazonaws.com:5432/d4mefokkve6lk0Heroku CLI
+heroku pg:psql postgresql-octagonal-38434 --app memos-manager

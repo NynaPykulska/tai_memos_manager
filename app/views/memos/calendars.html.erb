@@ -1,0 +1,114 @@
+<!-- <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Kalendarze</h4>
+        </div>
+
+        <div class="modal-body">
+            <table class="g-table-card g-table-issues" >
+                <thead>
+                    <tr>
+                        <th> summary</th>
+                        <th> id </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% @calendar_list.items.each do |calendar| %>
+                        <tr> 
+                            <td> <%= calendar.summary %> </td>
+                            <td> <%= calendar.id %> </td>
+                        </tr>
+                    <% end %>
+                
+                </tbody>
+                
+            </table>
+
+        </div>        
+
+        <div class="modal-footer">
+            <div class="text-right">
+                <a href="" data-dismiss="modal" class="btn btn-default">Anuluj</a>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>MEMOS</title>
+    </head>
+
+    <body>
+        <!-- Fluid Container -->
+        <!-- <div class="container-fluid g-aside-has-aside"> -->
+
+            <!-- Header with main buttons -->
+            <div class="row g-header">
+                <div class="col-sm-12">
+
+                    <!-- Screen Name -->
+                    <div class="pull-left g-navigation-text g-mobile-hide">
+                        <h4>Dodaj do kalendarza Google</h4>
+                    </div>             
+
+                </div>
+            </div>    <!-- Sub Navigation Tabs -->
+            
+            
+            <!-- Application Content -->
+            <div class="g-application-content">    
+                <!-- Card Row -->
+                <div class="row">
+                    <div class="col-md-12">            
+                        <table class="g-table-card g-table-issues tablesorter mysortable" id="memo_table">
+                            <thead>
+                    <tr>
+                        <th> Kalendarz</th>
+                        <th> ID </th>
+                        <th> Dodaj </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% @calendar_list.items.each do |calendar| %>
+                        <tr> 
+                            <td> <%= calendar.summary %> </td>
+                            <td> <%= calendar.id %> </td>
+                            <td> 
+
+                            <%= bootstrap_form_tag url: "/new_event" do |f| %>
+                                <%= f.hidden_field :calendar_id, :value =>  calendar.id %>
+                                <%= f.submit "Dodaj", :class => 'btn btn-primary' %>
+                            <% end %>
+                                       
+                            </td>
+                        </tr>
+                    <% end %>
+                
+                </tbody>
+                        </table>
+                    </div>
+                </div>  
+                <!-- / Card Row -->
+           </div>        
+        <!-- </div> -->
+    </body>
+    <footer>
+        <div class="text-right">
+            <div class="btn-group">
+                <%= link_to "Anuluj", list_path, :class => "btn btn-primary g-ripple-effect" %>                
+            </div>
+        </div>
+
+    </footer>
+
+</html>
+

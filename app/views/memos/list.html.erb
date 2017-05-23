@@ -4,12 +4,12 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Bocho</title>
+        <title>MEMOS</title>
     </head>
 
     <body>
         <!-- Fluid Container -->
-        <div class="container-fluid g-aside-has-aside">
+        <!-- <div class="container-fluid g-aside-has-aside"> -->
 
             <!-- Header with main buttons -->
             <div class="row g-header">
@@ -55,21 +55,10 @@
                             <%= link_to "Utwórz ", new_memo_path, remote: true, :class => "btn btn-primary g-ripple-effect" %>               
                         </div>
 
-                        <!-- User Avatar / Profile -->
-                        <%if user_signed_in? %>
-                            <div class="btn-group">
-                                <div class="dropdown">
-
-                                    <img class="g-header-avatar dropdown-toggle" src="<%= asset_path( 'avatars/user-avatar-1.png' ) %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="left: -90px">
-                                        <li><%= link_to 'Profile', edit_user_registration_path %></li>
-                                        <li role="separator" class="divider"></li>
-                                        <li><%= link_to 'Log out', destroy_user_session_path, method: :delete %></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        <% end %>
-
+                        <!-- EXPORT -->
+                        <div class="btn-group">
+                            <%= link_to "Dodaj do kalendarza", redirect_path, :class => "btn btn-primary g-ripple-effect" %>                
+                        </div>
                     </div>                        
 
                 </div>
@@ -199,12 +188,12 @@
                 </div>  
                 <!-- / Card Row -->
            </div>        
-        </div>
+        <!-- </div> -->
         <div id="modal-add-memo" class="modal fade"></div>
         <div id="memo-modal" class="modal fade" ></div>
     </body>
-
+<!-- 
     <%= javascript_include_tag "ripple-effect.js" %>
-    <%= javascript_include_tag "g-aside-expand.js" %>
+    <%= javascript_include_tag "g-aside-expand.js" %> -->
 
 </html>

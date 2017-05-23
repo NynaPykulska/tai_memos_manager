@@ -15,33 +15,6 @@ ActiveRecord::Schema.define(version: 20170307215632) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "issue_types", force: :cascade do |t|
-    t.text     "issue_description"
-    t.text     "default_priority"
-    t.text     "when_to_resolve"
-    t.date     "icon"
-    t.string   "ok_icon_file_name"
-    t.string   "ok_icon_content_type"
-    t.integer  "ok_icon_file_size"
-    t.datetime "ok_icon_updated_at"
-    t.string   "nok_icon_file_name"
-    t.string   "nok_icon_content_type"
-    t.integer  "nok_icon_file_size"
-    t.datetime "nok_icon_updated_at"
-  end
-
-  create_table "issues", force: :cascade do |t|
-    t.integer "room_id"
-    t.integer "issue_type_id"
-    t.date    "requested_fix_date"
-    t.text    "fix_comment"
-    t.date    "timestamp"
-    t.date    "completion_date"
-    t.text    "priority"
-    t.boolean "is_done",            default: false
-    t.boolean "is_recurring",       default: false
-    t.bigint  "event_id"
-  end
 
   create_table "memos", force: :cascade do |t|
     t.integer  "room_id"
@@ -52,11 +25,6 @@ ActiveRecord::Schema.define(version: 20170307215632) do
     t.boolean  "is_done"
     t.boolean  "is_recurring",    default: false
     t.bigint   "event_id"
-  end
-
-  create_table "rooms", primary_key: "room_id", id: :integer, force: :cascade do |t|
-    t.text    "description"
-    t.boolean "is_clean"
   end
 
   create_table "users", force: :cascade do |t|
