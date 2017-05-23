@@ -99,9 +99,9 @@
                 <div class="row">
                     <div class="col-md-12">            
                         <table class="g-table-card g-table-issues tablesorter mysortable" id="memo_table">
-                            <thead style="display: none">
+                            <thead >
                                 <tr>
-                                    <th>Icon</th>  <th>Desc</th> <th>Recurrence</th>  <th>Room</th> <th>Date</th> <th>Hour</th> <th>Done</th>
+                                    <th> </th>  <th>Memo</th> <th>Powtarzanie</th>  <th>Pokój</th> <th>Data</th> <th>Godzina</th> <th></th>
                                 </tr>
                             </thead>
 
@@ -115,12 +115,11 @@
                                             </td>
                                         
                                         <td class="g-vertical-middle strike-out <%= c.is_done ? 'td-done' : '' =%>">
-                                            <label>Memo</label>
+                                            
                                             <h4><%= c.description -%></h4>
                                         </td>
 
                                         <td class="hidden-xs hidden-sm g-vertical-top strike-out <%= c.is_done ? 'td-done' : '' =%>">
-                                            <label>Powtarzanie</label>
                                             <% if c.is_recurring == true %>
                                                 <%= image_tag "Refresh.png", :class => "g-issue-icon-mini"%>
                                             <% end %>
@@ -128,17 +127,14 @@
                                         </td>  
 
                                         <td class="g-vertical-top strike-out <%= c.is_done ? 'td-done' : '' =%>">
-                                            <label>Pokój</label>
                                             <h4><%= c.room_id -%></h4>
                                         </td>  
 
                                         <td class="hidden-xs hidden-sm g-vertical-top strike-out <%= c.is_done ? 'td-done' : '' =%>">
-                                            <label>Data</label>
                                             <h4><%= c.deadline.strftime("%Y-%m-%d") -%></h4>
                                         </td>  
 
                                         <td class="hidden-xs hidden-sm g-vertical-top strike-out <%= c.is_done ? 'td-done' : '' =%>">
-                                            <label>Godzina</label>
                                             <h4><%= c.deadline.strftime("%H:%M") -%></h4>
                                         </td>     
 
