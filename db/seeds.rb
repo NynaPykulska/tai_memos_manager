@@ -7,4 +7,3 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-User.create({:username => "user", :email => "guy@gmail.com", :password => "password", :password_confirmation => "password" })
