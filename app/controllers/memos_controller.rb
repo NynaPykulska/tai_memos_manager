@@ -4,7 +4,7 @@ class MemosController < ApplicationController
     before_action :authenticate_user!
 
    include MemoHelper       
-   @stored_date = nil
+   $stored_date = nil
 
     def redirect
       client = Signet::OAuth2::Client.new({
@@ -14,6 +14,10 @@ class MemosController < ApplicationController
         scope: Google::Apis::CalendarV3::AUTH_CALENDAR,
         redirect_uri: callback_url
       })
+      puts "params ------------------------"
+      puts params[:date]
+      $stored_date = params[:date]
+      puts "params ------------------------"
 
       redirect_to client.authorization_uri.to_s
     end
@@ -47,6 +51,8 @@ class MemosController < ApplicationController
       service.authorization = client
 
       @calendar_list = service.list_calendar_lists
+
+      
     end
 
      def new_event
@@ -61,16 +67,34 @@ class MemosController < ApplicationController
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = client
 
-      today = Date.today
+      puts "@stored_date ------------------------"
+      puts $stored_date
+      puts "@stored_date ------------------------"
+      date = Date.strptime($stored_date, "%Y-%m-%d")
 
-      event = Google::Apis::CalendarV3::Event.new({
-        start: Google::Apis::CalendarV3::EventDateTime.new(date: today),
-        end: Google::Apis::CalendarV3::EventDateTime.new(date: today + 1),
-        summary: 'New event!'
-      })
+      @memos = Memo.where('deadline BETWEEN ? AND ?', date.beginning_of_day, date.end_of_day).all
+      @memos.each do |memo|
+        event = Google::Apis::CalendarV3::Event.new({
+          start: Google::Apis::CalendarV3::EventDateTime.new(date: date),
+          end: Google::Apis::CalendarV3::EventDateTime.new(date: date + 1),
+          summary: memo.description
+        })
+        service.insert_event(params[:calendar_id], event)
+      end
 
+      # event = Google::Apis::CalendarV3::Event.new({
+      #   start: Google::Apis::CalendarV3::EventDateTime.new(date: date),
+      #   end: Google::Apis::CalendarV3::EventDateTime.new(date: date + 1),
+      #   summary: 'New event!'
+      # })
 
-      service.insert_event(params[:calendar_id], event)
+      # puts "event"
+      # puts event
+      # puts event.start
+      # puts event.end
+      # puts "------------------------"
+
+      # service.insert_event(params[:calendar_id], event)
 
       redirect_to list_url
     end
@@ -96,7 +120,7 @@ class MemosController < ApplicationController
     def mark_ready
       @memo = Memo.find(params[:id])
       @memo.update_attribute(:is_done, true)
-      @memo.update_attribute(:completion_date, Date.today)
+      @memo.update_attribute(:deadline, Date.today)
       @memo.is_done = true
       render :nothing => true
       # redirect_to :action => 'list'
@@ -105,7 +129,7 @@ class MemosController < ApplicationController
     def reopen
       @memo = Memo.find(params[:id])
       @memo.update_attribute(:is_done, false)
-      @memo.update_attribute(:completion_date, nil)
+      @memo.update_attribute(:deadline, nil)
       @memo.is_done = false
       render :nothing => true
       # redirect_to :action => 'list'
@@ -130,72 +154,13 @@ class MemosController < ApplicationController
  	def create
     @room = Room.where("room_id = ?", memo_params[:room_id]).first
 
-    if(memo_params[:is_recurring] == "0")
-      @date = DateTime.strptime(params[:memo]["completion_date"], '%Y-%m-%d').change({ hour: params[:memo]["completion_date(4i)"].to_i, min: params[:memo]["completion_date(5i)"].to_i})  
-      @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: @date, completion_date: memo_params[:completion_date], is_done: memo_params[:is_done], time_stamp: memo_params[:time_stamp], is_recurring: false )
+      @date = DateTime.strptime(params[:memo]["deadline"], '%Y-%m-%d').change({ hour: params[:memo]["deadline(4i)"].to_i, min: params[:memo]["deadline(5i)"].to_i})  
+      @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: @date, deadline: memo_params[:deadline], is_done: memo_params[:is_done], is_recurring: false )
       redirect_back(fallback_location: root_path)
-
-    else
-      start_date = DateTime.strptime(params[:memo]["start_date"], '%Y-%m-%d')
-      end_date = DateTime.strptime(params[:memo]["end_date"], '%Y-%m-%d')
-
-      # Generate a unique ID for an event
-      id = DateTime.now.strftime("%Y%m%d%k%M%S%L")
-      id = id.to_i.to_s(36)
-      id = id.to_i(36)
-
-      case memo_params[:recurrence]
-      when "1"
-        (start_date.to_i .. end_date.to_i).step(1.day) do |f|
-          puts Time.at(f)
-          @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: Time.at(f), completion_date: memo_params[:completion_date], is_done: memo_params[:is_done], time_stamp: memo_params[:time_stamp], is_recurring: true, event_id: id )
-        end
-        redirect_back(fallback_location: root_path)
-      when "2"
-        (start_date.to_i .. end_date.to_i).step(7.day) do |f|
-          puts Time.at(f)
-          @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: Time.at(f), completion_date: memo_params[:completion_date], is_done: memo_params[:is_done], time_stamp: memo_params[:time_stamp], is_recurring: true, event_id: id )
-        end
-        redirect_back(fallback_location: root_path)
-      when "3"
-        requested_day = start_date.day
-        start_date = start_date.change(day: 1)
-        max_days = 0
-        while start_date < end_date
-          max_days = Time.days_in_month(start_date.month, start_date.year)
-          if(requested_day <= max_days)
-            @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: start_date.change(day: requested_day), completion_date: memo_params[:completion_date], is_done: memo_params[:is_done], time_stamp: memo_params[:time_stamp], is_recurring: true, event_id: id )
-          else
-            @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: start_date.change(day: max_days), completion_date: memo_params[:completion_date], is_done: memo_params[:is_done], time_stamp: memo_params[:time_stamp], is_recurring: true, event_id: id )
-          end
-          start_date = start_date + 1.month
-        end       
-        redirect_back(fallback_location: root_path)
-      when "4"
-        pattern = memo_params[:pattern].delete(' ').split(",").map(&:to_i)
-        
-        start_date = start_date.change(day: 1)
-        max_days = 0
-
-        while start_date < end_date
-          max_days = Time.days_in_month(start_date.month, start_date.year)
-          pattern.each do |day|
-            if(day <= max_days)
-              @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: start_date.change(day: day), completion_date: memo_params[:completion_date], is_done: memo_params[:is_done], time_stamp: memo_params[:time_stamp], is_recurring: true, event_id: id )
-            else
-              @memo = @room.memos.create(room_id: memo_params[:room_id], description: memo_params[:description], deadline: start_date.change(day: max_days), completion_date: memo_params[:completion_date], is_done: memo_params[:is_done], time_stamp: memo_params[:time_stamp], is_recurring: true, event_id: id )
-            end
-          end
-          start_date = start_date + 1.month
-        end
-
-        redirect_back(fallback_location: root_path)
-      end
-    end
   end
    
 	def memo_params
-   		params.require(:memo).permit(:room_id, :description, :completion_date, :deadline, :memo_time, :time_stamp, :is_done, :is_recurring, :start_date, :end_date, :recurrence, :pattern)
+   		params.require(:memo).permit(:room_id, :description, :deadline, :deadline, :memo_time, :time_stamp, :is_done, :is_recurring, :start_date, :end_date, :recurrence, :pattern)
 	end
 
  	def edit
@@ -209,7 +174,7 @@ class MemosController < ApplicationController
   end
 
  	def memo_param
- 		params.require(:memo).permit(:room_no, :description, :completion_date)
+ 		params.require(:memo).permit(:room_no, :description, :deadline)
 	end
    
  	def delete

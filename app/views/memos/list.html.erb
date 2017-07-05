@@ -58,7 +58,7 @@
                         <!-- EXPORT -->
 
                         <div class="btn-group">
-                            <%= link_to "Dodaj do kalendarza", redirect_path, :class => "btn btn-primary g-ripple-effect" %>                
+                            <%= link_to "Dodaj do kalendarza", redirect_path(:date => @stored_date), :class => "btn btn-primary g-ripple-effect" %>                
                         </div>
                     </div>                        
 
@@ -101,7 +101,7 @@
                         <table class="g-table-card g-table-issues tablesorter mysortable" id="memo_table">
                             <thead >
                                 <tr>
-                                    <th> </th>  <th>Memo</th> <th>Powtarzanie</th>  <th>Pokój</th> <th>Data</th> <th>Godzina</th> <th></th>
+                                    <th> </th>  <th>Memo</th> <th>Pokój</th> <th>Data</th> <th>Godzina</th> <th></th>
                                 </tr>
                             </thead>
 
@@ -117,14 +117,7 @@
                                         <td class="g-vertical-middle strike-out <%= c.is_done ? 'td-done' : '' =%>">
                                             
                                             <h4><%= c.description -%></h4>
-                                        </td>
-
-                                        <td class="hidden-xs hidden-sm g-vertical-top strike-out <%= c.is_done ? 'td-done' : '' =%>">
-                                            <% if c.is_recurring == true %>
-                                                <%= image_tag "Refresh.png", :class => "g-issue-icon-mini"%>
-                                            <% end %>
-                                            </h4>
-                                        </td>  
+                                        </td>                                    
 
                                         <td class="g-vertical-top strike-out <%= c.is_done ? 'td-done' : '' =%>">
                                             <h4><%= c.room_id -%></h4>
